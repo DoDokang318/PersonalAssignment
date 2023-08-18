@@ -1,0 +1,9 @@
+C:\Users\user\Documents\GitHub\PersonalAssignment\PersonalAssignment\obj\Debug\PersonalAssignment.csproj.AssemblyReference.cache
+C:\Users\user\Documents\GitHub\PersonalAssignment\PersonalAssignment\obj\Debug\PersonalAssignment.csproj.CoreCompileInputs.cache
+C:\Users\user\source\repos\PersonalAssignment\PersonalAssignment\obj\Debug\PersonalAssignment.csproj.AssemblyReference.cache
+C:\Users\user\source\repos\PersonalAssignment\PersonalAssignment\obj\Debug\PersonalAssignment.csproj.CoreCompileInputs.cache
+C:\Users\user\source\repos\PersonalAssignment\PersonalAssignment\bin\Debug\PersonalAssignment.exe.config
+C:\Users\user\source\repos\PersonalAssignment\PersonalAssignment\bin\Debug\PersonalAssignment.exe
+C:\Users\user\source\repos\PersonalAssignment\PersonalAssignment\bin\Debug\PersonalAssignment.pdb
+C:\Users\user\source\repos\PersonalAssignment\PersonalAssignment\obj\Debug\PersonalAssignment.exe
+C:\Users\user\source\repos\PersonalAssignment\PersonalAssignment\obj\Debug\PersonalAssignment.pdb
