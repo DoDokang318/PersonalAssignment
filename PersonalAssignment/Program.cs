@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PersonalAssignment
@@ -10,11 +11,16 @@ namespace PersonalAssignment
     {
         private static List<equipment> equipmentList = new List<equipment>();
         private static List<equipment> RandomBoxList = new List<equipment>();
+        private static Random random = new Random();
+
+
+        private static int RandomBoxIndexCount = equipmentList.Count;
 
 
         private static player Player;
+    
 
-  
+
         private static equipment Sword;
         private static equipment Shield;
 
@@ -58,20 +64,17 @@ namespace PersonalAssignment
             RandomBoxList.Add(boneCrusher);
         }
 
-        static void InvenData()
-        {
 
-
-        }
 
 
             static void firstDisplay()
         {
             Console.WriteLine($"스파르타 마을에 오신 {Player.Name }님 환영합니다\n.이곳에서 던전으로 들어가기 전 활동을 할 수 있습니다");
-            Console.WriteLine(" 1. 상태 보기\n 2. 인벤토리");
+            Console.WriteLine(" 1. 상태 보기\n 2. 인벤토리\n 3.랜덤박스");
+            
 
-           
-            int input = CheckInput(1, 2);
+
+            int input = CheckInput(1, 3);
             switch (input)
             {
                 case 1:
@@ -81,6 +84,11 @@ namespace PersonalAssignment
                     Inven();
                
                     break;
+                case 3:
+                    RandomBox();
+                    break;
+
+                    
             }
 
 
@@ -90,7 +98,7 @@ namespace PersonalAssignment
         static void PlayerInfo()
         {
 
-         int TotalAt = Player.At; // 장착했을깨 이미 플레이러 스탯이랑 장비 스탯이 저장이되있음 (18)  그래서 + 8를 더출력하고싶으면  처음 플레이어스탯을 빼줘야함 
+         int TotalAt = Player.At;
          float TotalDt = Player.Dt;
 
             foreach (equipment eqItem in equipmentList) //무기 점수를 한번더 더해서 빼줘
@@ -106,7 +114,7 @@ namespace PersonalAssignment
             Console.WriteLine("Lv."+ Player.Level );
             Console.WriteLine("이름. :"+ Player.Name);
             Console.WriteLine("직업  :" + Player.Job);
-            Console.WriteLine($"공격력: {  Player.At } (+{ TotalAt - Player.At})");
+            Console.WriteLine($"공격력: {  Player.At } (+{ TotalAt - Player.At})"); // 장착했을깨 이미 플레이러 스탯이랑 장비 스탯이 저장이되있음 (18)  그래서 + 8를 더출력하고싶으면  처음 플레이어스탯을 빼줘야함 
             Console.WriteLine($"방어력: {  Player.Dt } (+{ TotalDt - Player.Dt})");
             Console.WriteLine("체력: " + Player.Hp);
             Console.WriteLine("gold: " + Player.Gold);
@@ -122,7 +130,7 @@ namespace PersonalAssignment
                 case 0:
                     firstDisplay();
                 break;
-                   
+              
 
 
             }
@@ -149,7 +157,10 @@ namespace PersonalAssignment
             foreach (equipment eqItem in equipmentList)
             {
                 string CompleteEq = eqItem.Eqbool ? "E" : " ";
-                Console.Write($"{CompleteEq}  장비 이름:{eqItem.Eq}   ㅣ"); Console.Write($"장비 공격력:{eqItem.EqAt}   ㅣ"); Console.Write($"장비 방어력:{eqItem.EqDt}   ㅣ"); Console.WriteLine($"장비 설명:{eqItem.EqExplain}   ㅣ");
+                Console.Write($"{CompleteEq}  장비 이름:{eqItem.Eq}   ㅣ");
+                Console.Write($"장비 공격력:{eqItem.EqAt}   ㅣ");
+                Console.Write($"장비 방어력:{eqItem.EqDt}   ㅣ");
+                Console.WriteLine($"장비 설명:{eqItem.EqExplain}   ㅣ");
             }
 
             Console.WriteLine("\n\n\n\n\n");
@@ -167,6 +178,7 @@ namespace PersonalAssignment
                 case 1:
                     InvenEq();
                     break;
+               
             }
 
         }
@@ -239,18 +251,17 @@ namespace PersonalAssignment
 
 
         }
-        ///<summary>
-        ///플레이어의 장비 를 랜덤으로 뽑아 EquipmentData() 에 add하는 메서드 
-        ///</summary>
+   
         public static void RandomBox()
         {
             Console.WriteLine("장비 랜덤뽑기(50 G)");
 
 
+            Console.WriteLine("\n\n\n\n\n\n\n");
 
 
-           
-
+            Console.WriteLine("나가기: 0");
+            Console.WriteLine("랜덤박스 : 1");
 
             int input = CheckInput(0, 1);
             switch (input)
@@ -259,16 +270,91 @@ namespace PersonalAssignment
                     firstDisplay();
                     break;
                 case 1:
-
+                    RandomEq();
                     break;
-
-
 
             }
 
         }
-     
-   
+        ///<summary>
+        ///플레이어의 장비 를 랜덤으로 뽑아 EquipmentData() 에 add하는 메서드 
+        ///</summary>
+        public static void RandomEq()
+        {
+           
+
+            int randomPercentage = random.Next(0, 10);
+            Player.Gold -= 50;
+           
+            if (Player.Gold < 50)
+            {
+                Console.WriteLine("돈부족!");
+                Thread.Sleep(1000);
+                Console.Clear();
+                firstDisplay();
+            }
+            else if (randomPercentage <= 1)// 10% 확률로 아이템 선택
+            {
+                int randomIndex = random.Next(0, 2);
+                equipment randomItem = new equipment(RandomBoxList[randomIndex].Eq , RandomBoxList[randomIndex].EqAt , RandomBoxList[randomIndex].EqDt, RandomBoxList[randomIndex].EqExplain);
+
+
+                equipmentList.Add(randomItem);// 새로운 인스턴스로 만들어줘서 넣어줘애한다 
+                string selectedItem = RandomBoxList[randomIndex].Eq;
+                RandomBoxIndexCount++;
+
+                UniqueEqCountdown(500);
+
+                Console.WriteLine($"축하합니다! 전설장비 '{selectedItem}'  획득하셨습니다.");
+                Thread.Sleep(2000);
+                Console.Clear();
+                firstDisplay();
+            }
+            else  // 90% 확률로 아이템 선택
+            {
+                int randomIndex = random.Next(2, 4);
+                equipment randomItem = new equipment(RandomBoxList[randomIndex].Eq, RandomBoxList[randomIndex].EqAt, RandomBoxList[randomIndex].EqDt, RandomBoxList[randomIndex].EqExplain);
+
+                equipmentList.Add(randomItem);
+                string selectedItem = RandomBoxList[randomIndex].Eq;
+                RandomBoxIndexCount++;
+
+                NomaEqCountdown(500);
+                Console.WriteLine($" 희귀장비  '{selectedItem}'  획득하셨습니다.");
+                Thread.Sleep(1000);
+                Console.Clear();
+                firstDisplay();
+            }
+        }
+
+        static void NomaEqCountdown(int milliseconds)
+        {
+           
+            Console.WriteLine("3");
+
+            Thread.Sleep(milliseconds);
+            Console.WriteLine("2");
+
+            Thread.Sleep(milliseconds);
+            Console.WriteLine("1");
+        }
+
+        static void UniqueEqCountdown(int milliseconds)
+        {
+           
+            Console.WriteLine("3");
+
+            Thread.Sleep(milliseconds);
+            Console.WriteLine("2");
+
+            Thread.Sleep(milliseconds);
+            Console.WriteLine("1");
+
+            Thread.Sleep(milliseconds);
+            Console.WriteLine("!★!☆!★!☆!★!☆!★!☆!★!☆!★!☆!★!☆!★!☆!★!☆!");
+            
+        }
+
 
 
 
@@ -331,7 +417,7 @@ namespace PersonalAssignment
         public int Level { get; }
         public int At { get; set; }
         public float Dt { get; set; }
-        public int Gold { get; }
+        public int Gold { get; set; }
          public int Hp { get; }
 
         public player(string name, string job, int level, int at, float dt, int hp, int gold)
@@ -346,3 +432,4 @@ namespace PersonalAssignment
         }
     }
 }
+
