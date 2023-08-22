@@ -9,12 +9,15 @@ namespace PersonalAssignment
 {
     class Program
     {
+
         private static List<equipment> equipmentList = new List<equipment>();
         private static List<equipment> RandomBoxList = new List<equipment>();
+        private static List<equipment> StoreList = new List<equipment>();
         private static Random random = new Random();
 
+      
 
-        private static int RandomBoxIndexCount = equipmentList.Count;
+
 
 
         private static player Player;
@@ -27,7 +30,12 @@ namespace PersonalAssignment
         private static equipment boneCrusher;
         private static equipment VeilOfNight;
         private static equipment Sheen; 
-        private static equipment GreatClub; 
+        private static equipment GreatClub;
+
+        private static equipment spear;
+        private static equipment Club;
+        private static equipment LongSword;
+        private static equipment Stick;
         static void Main(string[] args)
         {
             playerData();
@@ -46,13 +54,19 @@ namespace PersonalAssignment
 
         static void EquipmentData()
         {
-            Sword = new equipment("칼           ",8, 0 ,"짱쌘칼");
-            Shield = new equipment("방패         ",0, 5 ,"짱쌘방패");
+            Sword = new equipment("칼           ",8, 0 ,"짱쌘칼",100);
+            Shield = new equipment("방패         ",0, 5 ,"짱쌘방패", 100);
 
-            boneCrusher = new equipment("뼈분쇄기     ",14, 0 ,"맞으면 뼈가부서진다");
-            VeilOfNight = new equipment("밤의장막     ",0, 3, "검은색 천 이다 ");
-            Sheen = new equipment("광휘         ", 10, 10, "전설의 성스러운무기");
-            GreatClub = new equipment("자이언트클럽 ",16, -2, "엄청큰몽둥이");
+            boneCrusher = new equipment("뼈분쇄기     ",14, 0 ,"맞으면 뼈가부서진다", 500);
+            VeilOfNight = new equipment("밤의장막     ",0, 3, "검은색 천 이다 ", 50);
+            Sheen = new equipment("광휘         ", 10, 10, "전설의 성스러운무기", 1000);
+            GreatClub = new equipment("자이언트클럽 ",16, -2, "엄청큰몽둥이", 1000);
+
+            spear = new equipment("창 ", 6, 1, "평범한창", 200);
+            Club = new equipment("몽둥이 ", 9, 0, "큰몽둥이", 300);
+            LongSword = new equipment("롱소드 ", 10, 0, "평범한 롱소드", 350);
+            Stick = new equipment("막대기 ", 3, 1, "엄청큰몽둥이", 150);
+
 
             equipmentList.Add(Sword);
             equipmentList.Add(Shield);
@@ -62,6 +76,13 @@ namespace PersonalAssignment
             RandomBoxList.Add(Sheen);
             RandomBoxList.Add(VeilOfNight);
             RandomBoxList.Add(boneCrusher);
+
+            //========== 상점 리스트 
+            StoreList.Add(spear);
+            StoreList.Add(Club);
+            StoreList.Add(LongSword);
+            StoreList.Add(Stick);
+
         }
 
 
@@ -70,11 +91,11 @@ namespace PersonalAssignment
             static void firstDisplay()
         {
             Console.WriteLine($"스파르타 마을에 오신 {Player.Name }님 환영합니다\n.이곳에서 던전으로 들어가기 전 활동을 할 수 있습니다");
-            Console.WriteLine(" 1. 상태 보기\n 2. 인벤토리\n 3.랜덤박스");
+            Console.WriteLine(" 1. 상태 보기\n 2. 인벤토리\n 3.랜덤박스\n 4. 상점");
             
 
 
-            int input = CheckInput(1, 3);
+            int input = CheckInput(1, 4);
             switch (input)
             {
                 case 1:
@@ -86,6 +107,10 @@ namespace PersonalAssignment
                     break;
                 case 3:
                     RandomBox();
+                    break;
+
+                case 4:
+                    Store();
                     break;
 
                     
@@ -251,7 +276,67 @@ namespace PersonalAssignment
 
 
         }
-   
+
+        public static void Store()
+        {
+            Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
+            Console.WriteLine($"보유골드{Player.Gold}");
+            int storeEqCount = 1;
+
+            Console.WriteLine("[아이템 목록]\n");
+
+
+
+            foreach (equipment eqItem in StoreList)
+            {
+                string CompleteEq = eqItem.Eqbool ? "판매완료" : " ";
+                Console.Write($"{storeEqCount} 장비 이름:{eqItem.Eq} ");
+                Console.Write($"장비 공격력:{eqItem.EqAt}   ㅣ");
+                Console.Write($"장비 방어력:{eqItem.EqDt}   ㅣ");
+                Console.Write($"장비 설명:{eqItem.EqExplain}   ㅣ");
+                Console.WriteLine($"장비 가격:{eqItem.EqGold}   ㅣ  {CompleteEq} ");
+                storeEqCount++;
+            }
+
+            Console.WriteLine("\n\n\n\n\n");
+
+            Console.WriteLine("0 :인벤토리");
+            Console.WriteLine("구매할 번호 입력해주세요");
+
+            int InputEqIndex = int.Parse(Console.ReadLine()) - 1;
+
+
+
+
+            if (InputEqIndex == -1)
+            {
+                Console.Clear();
+                Inven();
+            }
+
+            if (InputEqIndex >= 0)
+            {
+
+                if (StoreList[InputEqIndex].Eqbool == false)
+                {
+                    StoreList[InputEqIndex].Eqbool = true;
+
+                    equipment storeItem = new equipment(StoreList[InputEqIndex].Eq, StoreList[InputEqIndex].EqAt, StoreList[InputEqIndex].EqDt, StoreList[InputEqIndex].EqExplain, StoreList[InputEqIndex].EqGold);
+                    equipmentList.Add(storeItem);
+                    Player.Gold -= StoreList[InputEqIndex].EqGold;
+                  
+                    Console.WriteLine("판매완료");
+                }
+              
+                Console.Clear();
+                Store();
+            }
+
+
+        }
+
+
+
         public static void RandomBox()
         {
             Console.WriteLine("장비 랜덤뽑기(50 G)");
@@ -296,12 +381,12 @@ namespace PersonalAssignment
             else if (randomPercentage <= 1)// 10% 확률로 아이템 선택
             {
                 int randomIndex = random.Next(0, 2);
-                equipment randomItem = new equipment(RandomBoxList[randomIndex].Eq , RandomBoxList[randomIndex].EqAt , RandomBoxList[randomIndex].EqDt, RandomBoxList[randomIndex].EqExplain);
+                equipment RandomItem = new equipment(RandomBoxList[randomIndex].Eq , RandomBoxList[randomIndex].EqAt , RandomBoxList[randomIndex].EqDt, RandomBoxList[randomIndex].EqExplain, RandomBoxList[randomIndex].EqGold);
 
 
-                equipmentList.Add(randomItem);// 새로운 인스턴스로 만들어줘서 넣어줘애한다 
-                string selectedItem = RandomBoxList[randomIndex].Eq;
-                RandomBoxIndexCount++;
+                equipmentList.Add(RandomItem);// 새로운 인스턴스로 만들어줘서 넣어줘애한다 
+                string selectedItem = RandomItem.Eq;
+          
 
                 UniqueEqCountdown(500);
 
@@ -313,11 +398,11 @@ namespace PersonalAssignment
             else  // 90% 확률로 아이템 선택
             {
                 int randomIndex = random.Next(2, 4);
-                equipment randomItem = new equipment(RandomBoxList[randomIndex].Eq, RandomBoxList[randomIndex].EqAt, RandomBoxList[randomIndex].EqDt, RandomBoxList[randomIndex].EqExplain);
+                equipment RandomItem = new equipment(RandomBoxList[randomIndex].Eq, RandomBoxList[randomIndex].EqAt, RandomBoxList[randomIndex].EqDt, RandomBoxList[randomIndex].EqExplain, RandomBoxList[randomIndex].EqGold);
 
-                equipmentList.Add(randomItem);
-                string selectedItem = RandomBoxList[randomIndex].Eq;
-                RandomBoxIndexCount++;
+                equipmentList.Add(RandomItem);
+                string selectedItem = RandomItem.Eq;
+           
 
                 NomaEqCountdown(500);
                 Console.WriteLine($" 희귀장비  '{selectedItem}'  획득하셨습니다.");
@@ -325,6 +410,8 @@ namespace PersonalAssignment
                 Console.Clear();
                 firstDisplay();
             }
+
+
         }
 
         static void NomaEqCountdown(int milliseconds)
@@ -390,15 +477,21 @@ namespace PersonalAssignment
 
     }
 
+    
+
     public class equipment
     {
+
+
         public bool Eqbool { get; set; }
         public string Eq { get; }
         public int EqAt { get; set; }
 
         public int EqDt { get; set; }
         public string EqExplain { get; }
-        public equipment(string eq, int eqat,int eqdt, string eqExplain )
+
+        public int EqGold { get; }
+        public equipment(string eq, int eqat,int eqdt, string eqExplain, int eqGold)
         {
             Eq = eq;
 
@@ -406,8 +499,12 @@ namespace PersonalAssignment
 
             EqDt = eqdt;
 
-           EqExplain = eqExplain;
+            EqExplain = eqExplain;
+
+            EqGold = eqGold;
+
         }
+        
     }
     public class player
     {
