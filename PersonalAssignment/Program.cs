@@ -13,6 +13,7 @@ namespace PersonalAssignment
         private static List<equipment> equipmentList = new List<equipment>();
         private static List<equipment> RandomBoxList = new List<equipment>();
         private static List<equipment> StoreList = new List<equipment>();
+        private static List<equipment> StoreSell = new List<equipment>();
         private static Random random = new Random();
 
       
@@ -82,6 +83,11 @@ namespace PersonalAssignment
             StoreList.Add(Club);
             StoreList.Add(LongSword);
             StoreList.Add(Stick);
+
+            //============상점 판매 리스트
+
+            StoreSell.Add(Sword);
+            StoreSell.Add(Shield);
 
         }
 
@@ -289,7 +295,7 @@ namespace PersonalAssignment
 
             foreach (equipment eqItem in StoreList)
             {
-                string CompleteEq = eqItem.Eqbool ? "판매완료" : " ";
+                string CompleteEq = eqItem.Eqbool ? "구매완료" : " ";
                 Console.Write($"{storeEqCount} 장비 이름:{eqItem.Eq} ");
                 Console.Write($"장비 공격력:{eqItem.EqAt}   ㅣ");
                 Console.Write($"장비 방어력:{eqItem.EqDt}   ㅣ");
@@ -300,18 +306,24 @@ namespace PersonalAssignment
 
             Console.WriteLine("\n\n\n\n\n");
 
-            Console.WriteLine("0 :인벤토리");
+            Console.WriteLine("-1 :인벤토리");
+            Console.WriteLine("0 :판매");
             Console.WriteLine("구매할 번호 입력해주세요");
 
-            int InputEqIndex = int.Parse(Console.ReadLine()) - 1;
+            int InputEqIndex = int.Parse(Console.ReadLine())-1;
 
 
 
 
-            if (InputEqIndex == -1)
+            if (InputEqIndex == -2)
             {
                 Console.Clear();
                 Inven();
+            }
+            if (InputEqIndex == -1)
+            {
+                Console.Clear();
+                StoreSales();
             }
 
             if (InputEqIndex >= 0)
@@ -323,18 +335,76 @@ namespace PersonalAssignment
 
                     equipment storeItem = new equipment(StoreList[InputEqIndex].Eq, StoreList[InputEqIndex].EqAt, StoreList[InputEqIndex].EqDt, StoreList[InputEqIndex].EqExplain, StoreList[InputEqIndex].EqGold);
                     equipmentList.Add(storeItem);
+                    StoreSell.Add(storeItem);
                     Player.Gold -= StoreList[InputEqIndex].EqGold;
                   
-                    Console.WriteLine("판매완료");
-                }
-              
+                }                    
                 Console.Clear();
                 Store();
+            }
+  
+
+        }
+        public static void StoreSales()
+        {
+            Console.WriteLine("필요한 아이템을 팔수 있는 상점입니다.");
+            Console.WriteLine($"보유골드{Player.Gold}");
+            int storeEqCount = 1;
+
+            Console.WriteLine("[아이템 목록]\n");
+
+
+
+            foreach (equipment eqItem in equipmentList)
+            {
+                string CompleteEq = eqItem.Eqbool ? " " : " ";
+                Console.Write($"{storeEqCount} 장비 이름:{eqItem.Eq} ");
+                Console.Write($"장비 공격력:{eqItem.EqAt}   ㅣ");
+                Console.Write($"장비 방어력:{eqItem.EqDt}   ㅣ");
+                Console.Write($"장비 설명:{eqItem.EqExplain}   ㅣ");
+                Console.WriteLine($"장비 가격:{eqItem.EqGold}   ㅣ  {CompleteEq} ");
+                storeEqCount++;
+            }
+
+            Console.WriteLine("\n\n\n\n\n");
+
+            Console.WriteLine("0 :구매");
+           
+            Console.WriteLine("판매할 아이템 번호 입력해주세요");
+
+            int InputEqIndex = int.Parse(Console.ReadLine()) - 1;
+
+
+
+
+            if (InputEqIndex == -1)
+            {
+                Console.Clear();
+                Store();
+            }
+     
+
+            if (InputEqIndex >= 0)
+            {
+
+                if (equipmentList[InputEqIndex].Eqbool == false || equipmentList[InputEqIndex].Eqbool == true)
+                {
+                    equipmentList[InputEqIndex].Eqbool = true;
+
+                    equipment storeItem = new equipment(equipmentList[InputEqIndex].Eq, equipmentList[InputEqIndex].EqAt, equipmentList[InputEqIndex].EqDt, equipmentList[InputEqIndex].EqExplain, equipmentList[InputEqIndex].EqGold);                   
+                    StoreList.Add(storeItem);
+
+                    Player.At -= equipmentList[InputEqIndex].EqAt;
+                    Player.Dt -= equipmentList[InputEqIndex].EqDt;
+                    Player.Gold += (StoreList[InputEqIndex].EqGold*0.85);
+                    equipmentList.Remove(equipmentList[InputEqIndex]);
+                }
+                Console.Clear();
+                StoreSales();
             }
 
 
         }
-
 
 
         public static void RandomBox()
@@ -382,8 +452,7 @@ namespace PersonalAssignment
             {
                 int randomIndex = random.Next(0, 2);
                 equipment RandomItem = new equipment(RandomBoxList[randomIndex].Eq , RandomBoxList[randomIndex].EqAt , RandomBoxList[randomIndex].EqDt, RandomBoxList[randomIndex].EqExplain, RandomBoxList[randomIndex].EqGold);
-
-
+                
                 equipmentList.Add(RandomItem);// 새로운 인스턴스로 만들어줘서 넣어줘애한다 
                 string selectedItem = RandomItem.Eq;
           
@@ -490,8 +559,8 @@ namespace PersonalAssignment
         public int EqDt { get; set; }
         public string EqExplain { get; }
 
-        public int EqGold { get; }
-        public equipment(string eq, int eqat,int eqdt, string eqExplain, int eqGold)
+        public double EqGold { get; }
+        public equipment(string eq, int eqat,int eqdt, string eqExplain, double eqGold)
         {
             Eq = eq;
 
@@ -514,10 +583,10 @@ namespace PersonalAssignment
         public int Level { get; }
         public int At { get; set; }
         public float Dt { get; set; }
-        public int Gold { get; set; }
+        public double Gold { get; set; }
          public int Hp { get; }
 
-        public player(string name, string job, int level, int at, float dt, int hp, int gold)
+        public player(string name, string job, int level, int at, float dt, int hp, double gold)
         {
             Name = name;
             Job = job;
