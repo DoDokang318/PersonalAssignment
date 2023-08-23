@@ -306,7 +306,7 @@ namespace PersonalAssignment
 
             Console.WriteLine("\n\n\n\n\n");
 
-            Console.WriteLine("-1 :인벤토리");
+            Console.WriteLine("-1 :처음화면으로");
             Console.WriteLine("0 :판매");
             Console.WriteLine("구매할 번호 입력해주세요");
 
@@ -318,7 +318,7 @@ namespace PersonalAssignment
             if (InputEqIndex == -2)
             {
                 Console.Clear();
-                Inven();
+                firstDisplay();
             }
             if (InputEqIndex == -1)
             {
@@ -326,7 +326,7 @@ namespace PersonalAssignment
                 StoreSales();
             }
 
-            if (InputEqIndex >= 0)
+            if (InputEqIndex >= 0&& InputEqIndex < StoreList.Count)
             {
 
                 if (StoreList[InputEqIndex].Eqbool == false)
@@ -338,9 +338,18 @@ namespace PersonalAssignment
                     StoreSell.Add(storeItem);
                     Player.Gold -= StoreList[InputEqIndex].EqGold;
                   
-                }                    
+                }
+              
                 Console.Clear();
                 Store();
+            }
+            else if(InputEqIndex > storeEqCount-2)
+            {
+                
+
+                Console.Clear();
+                Store();
+                Console.WriteLine("-1 ~ 9 사이의 숫자를 입력해주세요  ");
             }
   
 
@@ -384,7 +393,7 @@ namespace PersonalAssignment
             }
      
 
-            if (InputEqIndex >= 0)
+           if (InputEqIndex >= 0&& InputEqIndex < equipmentList.Count)
             {
 
                 if (equipmentList[InputEqIndex].Eqbool == false || equipmentList[InputEqIndex].Eqbool == true)
@@ -399,8 +408,17 @@ namespace PersonalAssignment
                     Player.Gold += (StoreList[InputEqIndex].EqGold*0.85);
                     equipmentList.Remove(equipmentList[InputEqIndex]);
                 }
+              
                 Console.Clear();
                 StoreSales();
+            }
+           else if (InputEqIndex > equipmentList.Count-2)
+            {
+                Console.WriteLine("올바른  숫자를 입력해주세요  ");
+                Thread.Sleep(500);
+                Console.Clear();
+                StoreSales();
+
             }
 
 
