@@ -44,7 +44,7 @@ namespace PersonalAssignment
             firstDisplay();
 
         }
-        static void playerData()
+        private static void playerData()
         {
             Console.WriteLine("게임시작전 플레이어 이름을 입력해주세요");
             string name = Console.ReadLine();
